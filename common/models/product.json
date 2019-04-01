@@ -1,0 +1,37 @@
+{
+  "name": "Product",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "String",
+      "require": true
+    },
+    "price": {
+      "type": "Number",
+      "require": true
+    },
+    "isAvailable": {
+      "type": "boolean",
+      "require": false
+    }
+  },
+  "validations": [],
+  "relations": {
+    "Category": {
+      "type": "belongsTo",
+      "model": "Category",
+      "foreignKey": ""
+    },
+    "CartItem": {
+      "type": "belongsTo",
+      "model": "belongsTo",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
