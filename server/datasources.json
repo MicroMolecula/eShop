@@ -1,16 +1,11 @@
 {
   "db": {
-    "name": "db",
-    "connector": "memory",
-    "file": "Shop.json"
-  },
-  "mongod": {
     "host": "localhost",
     "port": 27017,
     "url": "mongodb://localhost:27017/Shop",
     "database": "Shop",
     "password": "",
-    "name": "mongod",
+    "name": "db",
     "user": "",
     "connector": "mongodb"
   }
