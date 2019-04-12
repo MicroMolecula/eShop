@@ -8,28 +8,26 @@
   "properties": {
     "name": {
       "type": "String",
-      "require": true
+      "required": true
     },
     "price": {
       "type": "Number",
-      "require": true
+      "required": true
     },
     "isAvailable": {
       "type": "boolean",
-      "require": false
+      "required": false
     }
   },
   "validations": [],
   "relations": {
     "Category": {
       "type": "belongsTo",
-      "model": "Category",
-      "foreignKey": ""
+      "model": "Category"
     },
     "CartItem": {
       "type": "belongsTo",
-      "model": "belongsTo",
-      "foreignKey": ""
+      "model": "belongsTo"
     }
   },
   "acls": [],

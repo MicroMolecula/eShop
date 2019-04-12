@@ -8,24 +8,22 @@
   "properties": {
     "quantity": {
       "type": "Number",
-      "require": true
+      "required": true
     },
     "totalSum": {
       "type": "Number",
-      "require": false
+      "required": false
     }
   },
   "validations": [],
   "relations": {
     "cart": {
       "type": "belongsTo",
-      "model": "Cart",
-      "foreignKey": ""
+      "model": "Cart"
     },
     "product": {
       "type": "belongsTo",
-      "model": "Product",
-      "foreignKey": ""
+      "model": "Product"
     }
   },
   "acls": [],
