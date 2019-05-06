@@ -1,5 +1,7 @@
 module.exports = (CartItem) => {
-  CartItem.observe('after save', async (ctx) => {
+  CartItem.observe('before save', async (ctx) => {
+    console.log(ctx);
+
     const cart = await app.models.Cart.findById(ctx.instance.cartId);
     const product = await app.models.Product.findById(ctx.instance.productId);
 
@@ -17,9 +19,9 @@ module.exports = (CartItem) => {
   });
 
   CartItem.observe('before delete', async (ctx) => {
-    const cart = await app.models.Cart.findById(ctx.instance.cartId);
+    const cart = app.models.Cart.findById(ctx.where.id);
+    const cartItem = app.models.CartItem.findById(ctx.where.id);
 
-    cart.totalSum -= ctx.instance.totalSum;
-    await cart.save();
+    cart.totalSum -= cartItem.totalSum;
   });
 };
