@@ -1,7 +1,5 @@
 module.exports = (CartItem) => {
   CartItem.observe('before save', async (ctx) => {
-    console.log(ctx);
-
     const cart = await app.models.Cart.findById(ctx.instance.cartId);
     const product = await app.models.Product.findById(ctx.instance.productId);
 
@@ -23,5 +21,15 @@ module.exports = (CartItem) => {
     const cartItem = app.models.CartItem.findById(ctx.where.id);
 
     cart.totalSum -= cartItem.totalSum;
+  });
+
+  CartItem.observe('before save', async (ctx, quantity) => {
+    const product = await app.models.Product.findById(ctx.instance.productId);
+
+    if (product.isAvailable === false) {
+      throw new Error('Sorry, current product is not available');
+    } else {
+      return 'Cart item had crated';
+    }
   });
 };
