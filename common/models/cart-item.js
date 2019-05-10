@@ -1,18 +1,27 @@
 module.exports = (CartItem) => {
   CartItem.observe('before save', async (ctx) => {
-    const cart = await app.models.Cart.findById(ctx.instance.cartId);
-    const product = await app.models.Product.findById(ctx.instance.productId);
+    const cart = await app.models.Cart;
+    const product = await app.models.Product;
 
-    if (cart) {
-      ctx.instance.totalSum = product.price * ctx.instance.quantity;
-      cart.totalSum += ctx.instance.totalSum;
-      await cart.save();
-    } else {
-      cart.totalSum -= ctx.currentInstance.totalSum;
-      ctx.data.totalSum = ctx.instance.quantity * product.price;
-      cart.totalSum += ctx.instance.totalSum;
+    if (ctx.instance.cartId) {
+      const Cart = await cart.findById(ctx.instance.cartId);
+      const Product = await product.findById(ctx.instance.productId);
 
-      await cart.save();
+      ctx.instance.totalSum = Product.price * ctx.instance.quantity;
+      Cart.totalSum += ctx.instance.totalSum;
+      await Cart.save();
+    } else if (ctx.data) {
+      const Product = await product.findById(ctx.currentInstance.productId);
+      const Cart = await cart.findById(ctx);
+
+      ctx.currentInstance.totalSum = Product.price * ctx.currentInstance.quantity;
+      Cart.totalSum += ctx.currentInstance.totalSum;
+
+      Cart.totalSum -= ctx.currentInstance.totalSum;
+      ctx.data.totalSum = ctx.data.quantity * product.price;
+      Cart.totalSum += ctx.data.totalSum;
+
+      await Cart.save();
     }
   });
 
@@ -21,15 +30,6 @@ module.exports = (CartItem) => {
     const cartItem = app.models.CartItem.findById(ctx.where.id);
 
     cart.totalSum -= cartItem.totalSum;
-  });
-
-  CartItem.observe('before save', async (ctx, quantity) => {
-    const product = await app.models.Product.findById(ctx.instance.productId);
-
-    if (product.isAvailable === false) {
-      throw new Error('Sorry, current product is not available');
-    } else {
-      return 'Cart item had crated';
-    }
+    await cart.save();
   });
 };
