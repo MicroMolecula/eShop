@@ -1,27 +1,30 @@
 module.exports = (CartItem) => {
+  const Cart = app.models.Cart;
+  const Product = app.models.Product;
+
   CartItem.observe('before save', async (ctx) => {
-    const cart = await app.models.Cart;
-    const product = await app.models.Product;
+    const Cart = app.models.Cart;
+    const Product = app.models.Product;
 
     if (ctx.instance.cartId) {
-      const Cart = await cart.findById(ctx.instance.cartId);
-      const Product = await product.findById(ctx.instance.productId);
+      const product = await Product.findById(ctx.instance.productId);
+      const cart = await Cart.findById(ctx.instance.cartId);
 
-      ctx.instance.totalSum = Product.price * ctx.instance.quantity;
-      Cart.totalSum += ctx.instance.totalSum;
-      await Cart.save();
+      ctx.instance.totalSum = ctx.instance.quantity * product.price;
+      cart.totalSum += ctx.instance.totalSum;
+      await cart.save();
     } else if (ctx.data) {
-      const Product = await product.findById(ctx.currentInstance.productId);
-      const Cart = await cart.findById(ctx);
+      const product = await Product.findById(ctx.where.productId);
+      const cart = await Cart.findById(ctx.where.cartId);
 
-      ctx.currentInstance.totalSum = Product.price * ctx.currentInstance.quantity;
-      Cart.totalSum += ctx.currentInstance.totalSum;
+      ctx.currentInstance.totalSum = product.price * ctx.currentInstance.quantity;
+      cart.totalSum += ctx.currentInstance.totalSum;
 
-      Cart.totalSum -= ctx.currentInstance.totalSum;
+      cart.totalSum -= ctx.currentInstance.totalSum;
       ctx.data.totalSum = ctx.data.quantity * product.price;
-      Cart.totalSum += ctx.data.totalSum;
+      cart.totalSum += ctx.data.totalSum;
 
-      await Cart.save();
+      await cart.save();
     }
   });
 
@@ -31,5 +34,23 @@ module.exports = (CartItem) => {
 
     cart.totalSum -= cartItem.totalSum;
     await cart.save();
+  });
+
+  CartItem.observe('before save', async (ctx) => {
+    if (ctx.currentInstance) {
+      const product = await Product.findById(ctx.instance.productId);
+      const error = new EvalError();
+
+      if (product.isAvailable === false) {
+        throw error('Sorry, current product is not available');
+      }
+    };
+    if (ctx.data) {
+      const product = await Product.findById(ctx.currentInstance.productId);
+
+      if (product.isAvailable === false) {
+        throw new EvalError('Sorry, current product is not available');
+      }
+    }
   });
 };
