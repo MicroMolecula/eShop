@@ -16,8 +16,11 @@
   "relations": {
     "user": {
       "type": "belongsTo",
-      "model": "user",
-      "foreignKey": ""
+      "model": "user"
+    },
+    "cartItems": {
+      "type": "hasMany",
+      "model": "CartItem"
     }
   },
   "acls": [],

@@ -43,14 +43,11 @@ module.exports = (CartItem) => {
     } else if (ctx.data) {
       const product = await Product.findById(ctx.currentInstance.productId);
       const cart = await Cart.findById(ctx.currentInstance.cartId);
+      const oldTotalSum = ctx.currentInstance.totalSum;
 
-      ctx.currentInstance.totalSum = product.price * ctx.currentInstance.quantity;
-      cart.totalSum += ctx.currentInstance.totalSum;
-
-      cart.totalSum -= ctx.currentInstance.totalSum;
       ctx.data.totalSum = ctx.data.quantity * product.price;
+      cart.totalSum -= oldTotalSum;
       cart.totalSum += ctx.data.totalSum;
-
       await cart.save();
     }
   });
