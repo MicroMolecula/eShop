@@ -1,5 +1,4 @@
 module.exports = (CartItem) => {
-  const Cart = app.models.Cart;
   const Product = app.models.Product;
 
   CartItem.observe('before save', async (ctx) => {
@@ -37,19 +36,20 @@ module.exports = (CartItem) => {
   });
 
   CartItem.observe('before save', async (ctx) => {
+    const error = new EvalError('Sorry, current product is not available');
+
     if (ctx.currentInstance) {
       const product = await Product.findById(ctx.instance.productId);
-      const error = new EvalError();
 
       if (product.isAvailable === false) {
-        throw error('Sorry, current product is not available');
+        throw error;
       }
     };
     if (ctx.data) {
       const product = await Product.findById(ctx.currentInstance.productId);
 
       if (product.isAvailable === false) {
-        throw new EvalError('Sorry, current product is not available');
+        throw error;
       }
     }
   });
