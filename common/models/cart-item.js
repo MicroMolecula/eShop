@@ -1,32 +1,4 @@
 module.exports = (CartItem) => {
-  const Product = app.models.Product;
-
-  CartItem.observe('before save', async (ctx) => {
-    const Cart = app.models.Cart;
-    const Product = app.models.Product;
-
-    if (ctx.instance.cartId) {
-      const product = await Product.findById(ctx.instance.productId);
-      const cart = await Cart.findById(ctx.instance.cartId);
-
-      ctx.instance.totalSum = ctx.instance.quantity * product.price;
-      cart.totalSum += ctx.instance.totalSum;
-      await cart.save();
-    } else if (ctx.data) {
-      const product = await Product.findById(ctx.where.productId);
-      const cart = await Cart.findById(ctx.where.cartId);
-
-      ctx.currentInstance.totalSum = product.price * ctx.currentInstance.quantity;
-      cart.totalSum += ctx.currentInstance.totalSum;
-
-      cart.totalSum -= ctx.currentInstance.totalSum;
-      ctx.data.totalSum = ctx.data.quantity * product.price;
-      cart.totalSum += ctx.data.totalSum;
-
-      await cart.save();
-    }
-  });
-
   CartItem.observe('before delete', async (ctx) => {
     const cart = app.models.Cart.findById(ctx.where.id);
     const cartItem = app.models.CartItem.findById(ctx.where.id);
@@ -36,9 +8,12 @@ module.exports = (CartItem) => {
   });
 
   CartItem.observe('before save', async (ctx) => {
-    const error = new EvalError('Sorry, current product is not available');
+    const Product = app.models.Product;
+    const error = new Error('Sorry, current product is out of stock');
 
-    if (ctx.currentInstance) {
+    error.status = 412;
+
+    if (ctx.instance && ctx.instance.productId) {
       const product = await Product.findById(ctx.instance.productId);
 
       if (product.isAvailable === false) {
@@ -51,6 +26,32 @@ module.exports = (CartItem) => {
       if (product.isAvailable === false) {
         throw error;
       }
+    }
+  });
+
+  CartItem.observe('before save', async (ctx) => {
+    const Cart = app.models.Cart;
+    const Product = app.models.Product;
+
+    if (ctx.instance && ctx.instance.cartId) {
+      const product = await Product.findById(ctx.instance.productId);
+      const cart = await Cart.findById(ctx.instance.cartId);
+
+      ctx.instance.totalSum = ctx.instance.quantity * product.price;
+      cart.totalSum += ctx.instance.totalSum;
+      await cart.save();
+    } else if (ctx.data) {
+      const product = await Product.findById(ctx.currentInstance.productId);
+      const cart = await Cart.findById(ctx.currentInstance.cartId);
+
+      ctx.currentInstance.totalSum = product.price * ctx.currentInstance.quantity;
+      cart.totalSum += ctx.currentInstance.totalSum;
+
+      cart.totalSum -= ctx.currentInstance.totalSum;
+      ctx.data.totalSum = ctx.data.quantity * product.price;
+      cart.totalSum += ctx.data.totalSum;
+
+      await cart.save();
     }
   });
 };
