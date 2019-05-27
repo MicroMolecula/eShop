@@ -8,7 +8,7 @@
   "properties": {
     "totalSum": {
       "type": "Number",
-      "require": false,
+      "required": false,
       "defult": 0
     }
   },
