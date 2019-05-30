@@ -9,7 +9,7 @@
     "totalSum": {
       "type": "Number",
       "required": false,
-      "defult": 0
+      "default": 0
     }
   },
   "validations": [],
