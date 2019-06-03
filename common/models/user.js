@@ -1,5 +1,5 @@
 module.exports = function (user) {
-  user.observe('after save', async (ctx, next) => {
+  user.observe('after save', async (ctx) => {
     const Cart = user.app.models.Cart;
 
     await Cart.create({
