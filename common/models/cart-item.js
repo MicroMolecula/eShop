@@ -1,12 +1,4 @@
 module.exports = (CartItem) => {
-  CartItem.observe('before delete', async (ctx) => {
-    const cart = app.models.Cart.findById(ctx.where.id);
-    const cartItem = app.models.CartItem.findById(ctx.where.id);
-
-    cart.totalSum -= cartItem.totalSum;
-    await cart.save();
-  });
-
   CartItem.observe('before save', async (ctx) => {
     const Product = app.models.Product;
     const error = new Error('Sorry, current product is out of stock');
@@ -50,5 +42,20 @@ module.exports = (CartItem) => {
       cart.totalSum += ctx.data.totalSum;
       await cart.save();
     }
+  });
+
+  CartItem.deleteItemsFromCart = async (CartItemId) => {
+    const Cart = app.models.Cart;
+    const cartItem = await CartItem.findById(CartItemId);
+    const cart = await Cart.findById(cartItem.cartId);
+
+    cart.totalSum -= cartItem.totalSum;
+    await cart.save();
+  };
+
+  CartItem.remoteMethod('deleteItemsFromCart', {
+    accepts: { arg: 'CartItemId', type: 'string' },
+    returns: { arg: 'message', type: 'string' },
+    http: { verb: 'delete' }
   });
 };
