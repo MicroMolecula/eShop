@@ -55,5 +55,9 @@
   "user": {
     "dataSource": "db",
     "public": true
+  },
+  "Order": {
+    "dataSource": "db",
+    "public": true
   }
 }

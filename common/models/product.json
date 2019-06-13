@@ -27,7 +27,7 @@
     },
     "CartItem": {
       "type": "belongsTo",
-      "model": "belongsTo"
+      "model": "CartItem"
     }
   },
   "acls": [],

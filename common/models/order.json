@@ -1,0 +1,27 @@
+{
+    "name": "Order",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true
+    },
+    "properties": {
+        "totalSum": {
+            "type": "Number",
+            "requaired": true
+        }
+    },
+    "validations": [],
+    "relations": {
+        "Owner": {
+            "type": "belongsTo",
+            "model": "user"
+        },
+        "CartItem": {
+            "type": "hasMany",
+            "model": "CartItem"
+        }
+    },
+    "aclc": [],
+    "methods": {}
+}
