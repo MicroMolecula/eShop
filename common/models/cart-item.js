@@ -58,4 +58,42 @@ module.exports = (CartItem) => {
     returns: { arg: 'message', type: 'string' },
     http: { verb: 'delete' }
   });
+
+  CartItem.changeCartItemQuantityOrCreateNew = async (productId, cartId, quantity) => {
+    const cart = await app.models.Cart.findById(cartId);
+    const product = await app.models.Product.findById(productId);
+    const cartItem = await app.models.CartItem.findOne({ where: { productId: productId, cartId: cartId } });
+    
+    if (cartItem) {
+
+      cart.totalSum -= cartItem.totalSum;
+      cartItem.quantity += quantity;
+      cartItem.totalSum = cartItem.quantity * product.price;
+      cart.totalSum += cartItem.totalSum;
+
+      await cartItem.save();     
+      await cart.save();
+      return 'cartItem has added';
+    }
+    else {
+      const totalSum = quantity * product.price;
+      await CartItem.create({
+        quantity: quantity,
+        totalSum: totalSum,
+        cartId: cartId,
+        productId: productId
+      })
+      return 'new cartItem has created'
+    }
+  }
+
+  CartItem.remoteMethod('changeCartItemQuantityOrCreateNew', {
+    accepts: [
+      { arg: 'productId', type: 'string' },
+      { arg: 'cartId', type: 'string' },
+      { arg: 'quantity', type: 'Number' }
+    ],
+    returns: { arg: 'message', type: 'string' },
+    http: { verb: 'post' }
+  });
 };

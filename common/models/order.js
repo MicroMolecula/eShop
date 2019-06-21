@@ -6,12 +6,15 @@ module.exports = async (Order) => {
         const currentDate = new Date();
 
         for (let item of cartItem) {
-            ctx.instance.totalSum += item.totalSum;
 
+            ctx.instance.totalSum += item.totalSum;
             item.cartId = null;
             cart.totalSum = 0;
+            
             await item.save();
         }
+        
+        await cart.save();
 
         await Order.app.models.Email.send({
             to: user.email,
@@ -19,8 +22,8 @@ module.exports = async (Order) => {
             subject: 'Internet shop',
             text: '',
             html: "<p> Hello  " + user.username + " \n Thanks for shopping in my shop. \n Your order sum is "
-                + ctx.instance.totalSum + currentDate + "</p>"
+                + ctx.instance.totalSum + " " + currentDate + "</p>"
         })
-        
+
     });
 };

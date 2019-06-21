@@ -19,8 +19,8 @@
         "secure": true,
         "port": 465,
         "auth": {
-          "user": "den.shchokin@gmail.com",
-          "pass": "doctorwho13"
+          "user": "your email",
+          "pass": "your password"
         }
       }
     ]

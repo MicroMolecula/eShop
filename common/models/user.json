@@ -8,7 +8,11 @@
   "properties": {},
   "validations": [],
   "relations": {
-    "order": {
+    "cart": {
+      "type": "hasOne",
+      "model": "Cart"
+    },
+    "orders": {
       "type": "hasMany",
       "model": "Order"
     }

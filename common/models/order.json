@@ -8,12 +8,13 @@
     "properties": {
         "totalSum": {
             "type": "Number",
-            "requaired": true
+            "requaired": true ,
+            "default": 0
         }
     },
     "validations": [],
     "relations": {
-        "Owner": {
+        "user": {
             "type": "belongsTo",
             "model": "user"
         },
