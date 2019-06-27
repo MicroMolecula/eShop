@@ -1,5 +1,5 @@
 {
-    "name": "CurrencyConvertation",
+    "name": "CurrencyConvertion",
     "base": "PersistedModel",
     "idInjection": true,
     "options": {
