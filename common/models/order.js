@@ -13,11 +13,10 @@ module.exports = async (Order) => {
             cart.totalSum = 0;
 
             await item.save();
+            return 'Order has created';
         }
         await cart.save();
         await order.save();
-
-        return 'Order has made';
 
         await Order.app.models.Email.send({
             to: user.email,

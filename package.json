@@ -19,6 +19,9 @@
     "loopback-component-explorer": "^6.2.0",
     "loopback-connector-mongodb": "^4.0.0",
     "mongodb": "^3.2.2",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "request-promise-native": "^1.0.7",
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^3.0.0"
   },
